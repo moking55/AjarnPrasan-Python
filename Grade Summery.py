@@ -21,4 +21,4 @@ elif score>=50 and score<=54:
 elif score>=0 and score<=49:
    print('คะแนน',score,'ได้เกรด 0')
 else:
-   print('ERR: Please enter score as a number only')
+   print('ERR: Score must be a number only')
