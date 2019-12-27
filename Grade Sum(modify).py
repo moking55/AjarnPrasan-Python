@@ -24,25 +24,29 @@ print('\nWelcome ' + username)
   ##### TODO ######
 
   - Add Grade Calculate func
-  - Improve show_data() to beautiful look
 
 '''
-
 
 # append data to info.json
 def keep_data():
   clear()
   name = input('\nWhat is Student name?\n')
-  points = input('\nHow much points do student get?\n')
+  points = int(input('\nHow much points do student get?\n'))
 
-  #currentTime = int(datetime.timestamp(datetime.now()))
-  currentTime = datetime.now().strftime('%H:%M:%S %d/%m/%Y')
-  information = {
-    'name': name,
-    'points': points,
-    'added by': username,
-    'create at': currentTime
-  }
+  if points <= 100:
+    #currentTime = int(datetime.timestamp(datetime.now()))
+    currentTime = datetime.now().strftime('%H:%M:%S %d/%m/%Y')
+    information = {
+      'name': name,
+      'points': points,
+      'added by': username,
+      'create at': currentTime
+    }
+  else:
+    print('ERR: Do not enter values ​​greater than 100.')
+    time.sleep(2)
+    clear()
+    landing()
 
   get_json = get_data()
 
@@ -69,29 +73,51 @@ def get_data():
   except:
     return(False)
 
+
 # Show data from json
+# 26/12/2019 i got this error "list indices must be integers or slices, not str"
+# This problem has resolved by https://linuxconfig.org/how-to-parse-data-from-json-into-python
 def show_data():
-  
-    with open('info.json') as myData:
-      obj = json.loads(myData)
-      for p in obj['name']:
-        print('Name: ' + p['name'])
+  clear()
+  with open('info.json', 'r') as info_read:
+    info_data = json.load(info_read)
 
+  for data in info_data:
+    print('==========================')
+    print('Student: ' + data['name'])
+    print('Points: ' + str(data['points']))
+    print('Generate on: ' + str(data['create at']))
+  print('')
+# That's all i know..
 
-'''
-  with open("info.json", "r") as info_read:
-    data = json.load(info_read)
-    print(data)
-'''
+  after = input('[0] Return to main menu\n')
+  while True:
+    if after == '0':
+      clear()
+      landing()
+    else:
+      continue
+
 # Clear data from json
 def clear_data():
-  clear()
-  os.remove("info.json")
-  print("File Removed!")
-
-  time.sleep(2)
-  clear()
-  landing()
+  confirm = input('Are you sure? [Y/N]\n')
+  while True:
+    # IMPORTENT: if you want to make multiple chars check in input() you must type "'text' in *variable*" and type "or" and do it again!!!
+    if 'Y' in confirm or 'y' in confirm:
+      clear()
+      os.remove("info.json")
+      print("File Removed!")
+      time.sleep(2)
+      clear()
+      landing()
+    elif 'N' in confirm or 'n' in confirm:
+      clear()
+      landing()
+    else:
+      print('ERR: You must type Y or N only!')
+      time.sleep(2)
+      clear()
+      landing()
 
 
 # Menu item
