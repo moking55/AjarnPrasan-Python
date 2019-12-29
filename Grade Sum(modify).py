@@ -113,6 +113,7 @@ def show_data():
       print('ERR: invalid number...')
       time.sleep(1)
       show_data()
+      break
 
 # This is a useless func ever but i've add it if you need that
 '''
@@ -138,6 +139,45 @@ def check_data():
       else:
         continue
 '''
+
+
+# Append activity_log to jsonfile
+def login_log():
+  log_time = datetime.now().strftime('%H:%M | %d/%m/%Y')
+  log_data = {
+    'username': username,
+    'login_time': log_time
+  }
+
+  with open('Activity_log.json', 'w') as json_file:
+    json.dump(log_data, json_file)
+
+
+# show Acitivity log from json
+def login_log_show():
+  clear()
+  with open('Activity_log.json', 'r') as info_data:
+    log_data = json.load(info_data)
+
+  for data in log_data:
+    print('==[Activity]==============')
+    print('Username: ' + log_data['username'])
+    print('Login time: ' + str(log_data['login_time']))
+    print('==========================')
+    break
+  print('')
+
+  return_to_menu = input('[0] Return to main menu\n')
+  while True:
+    if return_to_menu == '0':
+      clear()
+      landing()
+      break
+    else:
+      print('ERR: invalid number...')
+      time.sleep(1)
+      show_data()
+      break
 
 # Clear data from json
 def clear_data():
@@ -170,7 +210,7 @@ def landing():
     print('What do you want to do?')
     print('[1] Add Student Data')
     print('[2] View Student Data')
-    print('[3] Empty')
+    print('[3] View Activity Data')
     print('[4] Clear Data')
     print('\n[9] About this software')
     print('[0] Exit Program')
@@ -182,7 +222,7 @@ def landing():
       show_data()
       break
     elif x == 3:
-      empty_func()
+      login_log_show()
       break
     elif x == 4:
       clear_data()
@@ -199,7 +239,7 @@ def landing():
       continue
 
 if '__main__' == __name__:
-
+  login_log()
   license_check = pathlib.Path('Licence')
   if license_check.exists():
     landing()
