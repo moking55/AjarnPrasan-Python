@@ -1,6 +1,6 @@
-import json, os, time
+import json, os, time, os.path, pathlib
 from datetime import datetime
-from os import system, name
+from os import system, name, path
 
 # clear screen function 
 def clear(): 
@@ -13,24 +13,21 @@ def clear():
     else: 
         _ = system('clear')
 
-
-
 username = input('\nWhat is your name?\n')
 clear()
-print('\nWelcome ' + username)
-
 
 '''
   ##### TODO ######
 
   - Add Grade Calculate func
+  - Add login Log
 
 '''
 
 # append data to info.json
 def keep_data():
   clear()
-  name = input('\nWhat is Student name?\n')
+  name = input('What is Student name?\n')
   points = int(input('\nHow much points do student get?\n'))
 
   if points <= 100:
@@ -65,7 +62,6 @@ def keep_data():
   landing()
 
 def get_data():
-  clear()
   try:
     file = open('info.json', 'r')
     data = file.read()
@@ -79,24 +75,69 @@ def get_data():
 # This problem has resolved by https://linuxconfig.org/how-to-parse-data-from-json-into-python
 def show_data():
   clear()
-  with open('info.json', 'r') as info_read:
-    info_data = json.load(info_read)
+  data = pathlib.Path('info.json')
+  # i've fix "File not found" error message by using pathlib module 
+  if data.exists():
+    with open('info.json', 'r') as info_read:
+      info_data = json.load(info_read)
 
-  for data in info_data:
-    print('==========================')
-    print('Student: ' + data['name'])
-    print('Points: ' + str(data['points']))
-    print('Generate on: ' + str(data['create at']))
-  print('')
+    for data in info_data:
+      print('==========================')
+      print('Student: ' + data['name'])
+      print('Points: ' + str(data['points']))
+      print('Generate on: ' + str(data['create at']))
+    print('')
+  else:
+      clear()
+      Data_ERR = input('ERR: File info.json not found.\nwould you like to add new data? [Y/N]\n')
+      while True:
+        if 'Y' in Data_ERR or 'y' in Data_ERR:
+          clear()
+          keep_data()
+          break
+        elif 'N' in Data_ERR or 'n' in Data_ERR:
+          clear()
+          landing()
+          break
+        else:
+          continue
 # That's all i know..
 
-  after = input('[0] Return to main menu\n')
+  return_to_menu = input('[0] Return to main menu\n')
   while True:
-    if after == '0':
+    if return_to_menu == '0':
       clear()
       landing()
+      break
     else:
-      continue
+      print('ERR: invalid number...')
+      time.sleep(1)
+      show_data()
+
+# This is a useless func ever but i've add it if you need that
+'''
+def check_data():
+  file = pathlib.Path("info.json")
+  if file.exists():
+    clear()
+    print ("Found info.json, Everything is fine.")
+    time.sleep(2)
+    clear()
+  else:
+    clear()
+    Data_ERR = input('ERR: File info.json notfound\nwould you like to add new data? [Y/N]\n')
+    while True:
+      if 'Y' in Data_ERR or 'y' in Data_ERR:
+        clear()
+        keep_data()
+        break
+      elif 'N' in Data_ERR or 'n' in Data_ERR:
+        clear()
+        landing()
+        break
+      else:
+        continue
+'''
 
 # Clear data from json
 def clear_data():
@@ -110,24 +151,29 @@ def clear_data():
       time.sleep(2)
       clear()
       landing()
+      break
     elif 'N' in confirm or 'n' in confirm:
       clear()
       landing()
+      break
     else:
       print('ERR: You must type Y or N only!')
       time.sleep(2)
       clear()
       landing()
-
+      break
 
 # Menu item
 def landing():
   while True:
-    print('\nWhat do you want to do?')
+    print('Welcome ' + username + ' | ' + datetime.now().strftime('%H:%M | %d/%m/%Y'))
+    print('What do you want to do?')
     print('[1] Add Student Data')
-    print('[2] Check Student Data')
-    print('[3] Clear Data')
-    print('[4] Exit Program')
+    print('[2] View Student Data')
+    print('[3] Empty')
+    print('[4] Clear Data')
+    print('\n[9] About this software')
+    print('[0] Exit Program')
     x = int(input('Type number...\n'))
     if x == 1:
       keep_data()
@@ -136,12 +182,27 @@ def landing():
       show_data()
       break
     elif x == 3:
-      clear_data()
+      empty_func()
       break
     elif x == 4:
+      clear_data()
+      break
+    elif x == 9:
+      clear()
+      L_read = open('Licence', 'r')
+      print(L_read.read())
+      break
+    elif x == 0:
       exit()
     else:
+      clear()
       continue
 
 if '__main__' == __name__:
-  landing()
+
+  license_check = pathlib.Path('Licence')
+  if license_check.exists():
+    landing()
+  else:
+    print('ERR: Missing Licence File')
+    exit()
