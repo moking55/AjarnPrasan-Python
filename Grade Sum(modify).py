@@ -159,6 +159,7 @@ def login_log_show():
   with open('Activity_log.json', 'r') as info_data:
     log_data = json.load(info_data)
 
+  # don't forget to add "break" everytime when you're use loop to end the func
   for data in log_data:
     print('==[Activity]==============')
     print('Username: ' + log_data['username'])
@@ -196,6 +197,7 @@ def clear_data():
       clear()
       landing()
       break
+    
     else:
       print('ERR: You must type Y or N only!')
       time.sleep(2)
